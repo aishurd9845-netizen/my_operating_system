@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OS Academy — Interactive Learning</title>
+
+<style>
+:root {
+  --bg: #080d1b;
+  --panel: #111a2e;
+  --surface: #0b1222;
+  --line: #2a3a57;
+  --text: #e7eef8;
+  --muted: #a3b3cb;
+  --blue: #38bdf8;
+  --purple: #a78bfa;
+  --pink: #f472b6;
+  --yellow: #facc15;
+  --green: #4ade80;
+  --red: #f87171;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top right, #192b50, transparent 650px),
+    var(--bg);
+  font-family: system-ui, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+  opacity: .55;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 15px 22px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(8, 13, 27, .96);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.brand {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+button, select {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #17243d;
+  color: var(--text);
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--blue);
+}
+
+button.active, .primary {
+  background: linear-gradient(110deg, var(--blue), var(--purple));
+  color: #071323;
+  border-color: transparent;
+  font-weight: 750;
+}
+
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 26px 18px 70px;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.25;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  margin-top: 0;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
+  min-width: 0;
+}
+
+.intro {
+  border-left: 4px solid var(--blue);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr);
+  gap: 18px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  text-align: left;
+  padding: 22px;
+}
+
+.card strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+
+label {
+  color: var(--muted);
+}
+
+input[type="number"] {
+  width: 76px;
+  padding: 7px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 11px 7px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.timeline {
+  display: flex;
+  gap: 5px;
+  min-height: 90px;
+  overflow-x: auto;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  align-items: stretch;
+}
+
+.tick {
+  flex: 0 0 48px;
+  min-height: 62px;
+  border-radius: 8px;
+  color: #071323;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  animation: enter .25s ease;
+}
+
+.tick small {
+  font-size: .65rem;
+  font-weight: 500;
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.p1 { background: var(--blue); }
+.p2 { background: var(--purple); }
+.p3 { background: var(--pink); }
+.p4 { background: var(--yellow); }
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.tag {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: .85rem;
+}
+
+.good { color: var(--green); }
+.bad { color: var(--red); }
+
+.observation {
+  padding: 16px;
+  margin-top: 15px;
+  border-left: 4px solid var(--yellow);
+  background: var(--surface);
+  border-radius: 10px;
+  min-height: 86px;
+}
+
+.cpu-box {
+  padding: 24px;
+  border: 2px solid var(--blue);
+  border-radius: 14px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.cpu-box strong {
+  display: block;
+  font-size: 1.7rem;
+  color: var(--blue);
+}
+
+.queue {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.process-chip {
+  padding: 8px 12px;
+  border-radius: 9px;
+  color: #071323;
+  font-weight: 700;
+}
+
+.frames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.frame {
+  width: 100px;
+  min-height: 85px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+}
+
+.frame strong {
+  font-size: 1.6rem;
+}
+
+.frame.hit {
+  border-color: var(--green);
+}
+
+.frame.miss {
+  border-color: var(--red);
+}
+
+.track {
+  position: relative;
+  height: 100px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin: 18px 0;
+}
+
+.track::before {
+  content: "";
+  position: absolute;
+  top: 48px;
+  left: 10px;
+  right: 10px;
+  height: 4px;
+  background: var(--line);
+}
+
+.head {
+  position: absolute;
+  top: 25px;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #071323;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  transition: left .5s ease;
+}
+
+.resource-map {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.node {
+  padding: 24px 12px;
+  text-align: center;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.node.blocked {
+  border-color: var(--red);
+}
+
+.node.running {
+  border-color: var(--green);
+}
+
+.pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.stage {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.stage.current {
+  border-color: var(--blue);
+  background: #12324b;
+}
+
+.question {
+  padding: 20px;
+  margin: 15px 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.difficulty {
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--yellow);
+}
+
+.option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin: 8px 0;
+}
+
+.option.correct {
+  background: #123725;
+  border-color: var(--green);
+}
+
+.option.wrong {
+  background: #421d29;
+  border-color: var(--red);
+}
+
+.feedback {
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+.scorecard {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.score-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.progress {
+  height: 9px;
+  background: var(--surface);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.progress div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+  transition: width .3s;
+}
+
+details {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+
+:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 3px;
+}
+
+@media (max-width: 800px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    padding: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">OS Academy</div>
+    <nav id="navigation" aria-label="Modules"></nav>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="page active">
+    <span class="muted">Learn through consequences, not just definitions</span>
+    <h1>Run the operating system.<br>Understand its decisions.</h1>
+
+    <p class="muted">
+      Start with a short introduction, explore a scenario step by step,
+      then answer easy, medium, and hard questions.
+    </p>
+
+    <div class="panel intro">
+      <h3>Your learning path</h3>
+      <p>
+        Introduction → Scenario → Interactive experiment →
+        Explanation → Quiz → Scorecard
+      </p>
+      <p class="muted">
+        This prototype contains five modules. All simulations run locally
+        inside this page; they do not control your real operating system.
+        Scores reset when you reload the page.
+      </p>
+    </div>
+
+    <div class="cards" id="moduleCards"></div>
+  </section>
+
+  <section id="process" class="page">
+    <h2>Process scheduling</h2>
+
+    <div class="panel intro">
+      <h3>What are we investigating?</h3>
+      <p>
+        A CPU core executes one thread at a time. When several processes
+        are ready, the scheduler decides who runs next.
+      </p>
+      <p>
+        A CPU burst is a period of CPU execution before a process finishes
+        or needs to wait. In this simplified lab, each process has one
+        burst, and all arrive at time 0.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Scenario: a long video export blocks a notification</h3>
+      <p>
+        P1 represents a video export. P2 represents a notification task.
+        P3 performs a search, and P4 scans a file.
+      </p>
+      <p>
+        Increase P1's burst time and run FCFS. Does the notification
+        receive CPU time immediately, or must it wait?
+      </p>
+      <p class="muted">
+        Equal-arrival ties use the displayed order. Context-switch
+        overhead is omitted. Time units are abstract, not seconds.
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Build your experiment</h3>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Process</th>
+                <th>Task</th>
+                <th>Burst</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>P1</td><td>Video export</td>
+                <td><input id="burst0" type="number"
+                  min="1" max="40" value="20" aria-label="P1 burst"></td>
+              </tr>
+              <tr>
+                <td>P2</td><td>Notification</td>
+                <td><input id="burst1" type="number"
+                  min="1" max="40" value="2" aria-label="P2 burst"></td>
+              </tr>
+              <tr>
+                <td>P3</td><td>Search</td>
+                <td><input id="burst2" type="number"
+                  min="1" max="40" value="3" aria-label="P3 burst"></td>
+              </tr>
+              <tr>
+                <td>P4</td><td>File scan</td>
+                <td><input id="burst3" type="number"
+                  min="1" max="40" value="4" aria-label="P4 burst"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="controls">
+          <label for="algorithm">Scheduler</label>
+          <select id="algorithm">
+            <option value="fcfs">FCFS</option>
+            <option value="sjf">SJF — non-preemptive</option>
+            <option value="rr">Round Robin</option>
+          </select>
+
+          <label for="quantum">Quantum</label>
+          <input id="quantum" type="number" min="1" max="20" value="4">
+        </div>
+
+        <div class="controls">
+          <button class="primary" id="buildSchedule">Load scenario</button>
+          <button id="playSchedule">Play</button>
+          <button id="stepSchedule">Step</button>
+          <button id="resetSchedule">Reset playback</button>
+
+          <label for="speed">Speed</label>
+          <select id="speed">
+            <option value="1000">Slow</option>
+            <option value="450" selected>Normal</option>
+            <option value="120">Fast</option>
+          </select>
+        </div>
+
+        <div id="timeline" class="timeline"
+          aria-label="CPU execution timeline"></div>
+
+        <div id="processObservation" class="observation"
+          aria-live="polite"></div>
+
+        <div id="processResults"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Inside the CPU</h3>
+        <div class="cpu-box">
+          CPU executing
+          <strong id="cpuProcess">Ready</strong>
+          <span id="clock">Time: 0</span>
+        </div>
+
+        <h4>Unfinished processes</h4>
+        <div id="readyQueue" class="queue"></div>
+
+        <details>
+          <summary>Why does FCFS delay small tasks?</summary>
+          <p>
+            Non-preemptive FCFS lets the running process finish its burst.
+            A short task cannot interrupt a long task ahead of it.
+            This demonstrates head-of-line blocking and the convoy effect.
+          </p>
+        </details>
+
+        <details>
+          <summary>Why does Round Robin feel more responsive?</summary>
+          <p>
+            A process receives at most one quantum before moving to the
+            back of the ready queue if unfinished. Other processes get
+            an earlier opportunity to run.
+          </p>
+        </details>
+
+        <details>
+          <summary>Interview: waiting time versus response time</summary>
+          <p>
+            Waiting time is the total time spent ready but not running.
+            Response time is the delay until a process first receives CPU
+            time. They are not generally the same.
+          </p>
+        </details>
+      </div>
+    </div>
+
+    <div id="processQuiz"></div>
+  </section>
+
+  <section id="memory" class="page">
+    <h2>Memory and page replacement</h2>
+
+    <div class="panel intro">
+      <h3>Why does a page need replacing?</h3>
+      <p>
+        Virtual memory maps virtual pages to physical frames.
+        This lab has only three frames. A reference to a page absent
+        from RAM causes a page fault.
+      </p>
+      <p>
+        If every frame is occupied, a replacement policy selects a victim.
+        In a real system, a dirty victim may need writing back before
+        the requested page can be loaded.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Experiment: what gets evicted?</h3>
+      <p>
+        Step through this reference string:
+        <code>7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2</code>.
+        Compare FIFO's oldest-loaded rule with LRU's
+        least-recently-used rule.
+      </p>
+
+      <div class="controls">
+        <select id="pagePolicy" aria-label="Page replacement policy">
+          <option value="fifo">FIFO</option>
+          <option value="lru">LRU</option>
+        </select>
+        <button class="primary" id="nextPage">Next reference</button>
+        <button id="resetMemory">Reset</button>
+      </div>
+
+      <div id="memoryFrames" class="frames"></div>
+      <div id="memoryTags" class="tags"></div>
+      <div id="memoryObservation" class="observation" aria-live="polite"></div>
+    </div>
+
+    <div id="memoryQuiz"></div>
+  </section>
+
+  <section id="files" class="page">
+    <h2>Storage and disk scheduling</h2>
+
+    <div class="panel intro">
+      <h3>Why does request order matter?</h3>
+      <p>
+        A file system maps names and metadata to stored data.
+        On a traditional hard disk, moving the mechanical head takes
+        time. Disk scheduling can reduce this movement.
+      </p>
+      <p class="muted">
+        This head-movement model applies to HDDs, not SSDs,
+        which have no mechanical seek head.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Scenario: choose the nearest pending request</h3>
+      <p>
+        The head starts at cylinder 50. Pending requests are
+        82, 170, 43, 140, 24, 16, and 190.
+        SSTF chooses the nearest pending request at each step.
+      </p>
+
+      <div class="controls">
+        <button class="primary" id="nextDisk">Service next request</button>
+        <button id="resetDisk">Reset</button>
+      </div>
+
+      <div class="track">
+        <div id="diskHead" class="head">50</div>
+      </div>
+
+      <div id="diskPending" class="tags"></div>
+      <div id="diskObservation" class="observation" aria-live="polite"></div>
+    </div>
+
+    <div id="filesQuiz"></div>
+  </section>
+
+  <section id="deadlock" class="page">
+    <h2>Deadlock and recovery</h2>
+
+    <div class="panel intro">
+      <h3>Busy is not the same as blocked</h3>
+      <p>
+        A process may hold one resource while waiting for another.
+        If processes form a cycle of dependencies, progress can stop.
+        This lab uses one instance of each resource.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Scenario: printer and scanner</h3>
+      <p>
+        P1 holds the printer. P2 holds the scanner.
+        Let each request the other resource and inspect the result.
+      </p>
+
+      <div class="resource-map">
+        <div id="node1" class="node">P1 holds printer</div>
+        <div id="node2" class="node">P2 holds scanner</div>
+      </div>
+
+      <div class="controls">
+        <button class="primary" id="createDeadlock">
+          Request each other's resource
+        </button>
+        <button id="recoverDeadlock">Terminate P2 and release resources</button>
+        <button id="resetDeadlock">Reset</button>
+      </div>
+
+      <div id="deadlockObservation" class="observation" aria-live="polite"></div>
+
+      <details>
+        <summary>Interview: the four necessary conditions</summary>
+        <p>
+          Mutual exclusion, hold and wait, no preemption, and circular
+          wait. Prevention removes at least one condition.
+          Recovery acts after deadlock has occurred.
+        </p>
+      </details>
+    </div>
+
+    <div id="deadlockQuiz"></div>
+  </section>
+
+  <section id="security" class="page">
+    <h2>Permissions and system calls</h2>
+
+    <div class="panel intro">
+      <h3>Who is allowed to do what?</h3>
+      <p>
+        Applications request kernel services through system calls.
+        The kernel checks credentials and permissions before accessing
+        protected resources.
+      </p>
+      <p>
+        This simulated file belongs to Alice. Alice can read and write;
+        a guest can read but cannot write.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h3>Experiment: change the user, then request access</h3>
+
+      <div class="controls">
+        <label for="identity">Identity</label>
+        <select id="identity">
+          <option value="guest">Guest</option>
+          <option value="alice">Alice — owner</option>
+        </select>
+
+        <label for="operation">Operation</label>
+        <select id="operation">
+          <option value="read">read()</option>
+          <option value="write">write()</option>
+        </select>
+
+        <button class="primary" id="securityStep">Next stage</button>
+        <button id="resetSecurity">Reset request</button>
+      </div>
+
+      <div class="pipeline">
+        <div class="stage">1. User application</div>
+        <div class="stage">2. Kernel entry</div>
+        <div class="stage">3. Permission check</div>
+        <div class="stage">4. Result</div>
+      </div>
+
+      <div id="securityObservation" class="observation" aria-live="polite"></div>
+    </div>
+
+    <div id="securityQuiz"></div>
+  </section>
+
+  <section class="panel">
+    <div class="scorecard">
+      <div>
+        <h3>Your scorecard</h3>
+        <div id="totalScore" class="score-number">0 / 0</div>
+      </div>
+      <div id="scoreDetails" class="muted"></div>
+    </div>
+    <div class="progress"><div id="scoreProgress"></div></div>
+    <p class="muted">
+      Easy: 1 point · Medium: 2 points · Hard: 3 points.
+      Questions use fixed scenarios stated in their wording,
+      so changing a simulator does not change their answers.
+    </p>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const modules = [
+  ["home", "Home", "Choose a learning module."],
+  ["process", "Processes", "Explore long bursts, waiting, and responsiveness."],
+  ["memory", "Memory", "Choose which page to evict when RAM is full."],
+  ["files", "Storage", "Move the HDD head and compare request distances."],
+  ["deadlock", "Deadlock", "Create a circular wait and recover from it."],
+  ["security", "Security", "Trace a request through kernel permission checks."]
+];
+
+let timer = null;
+
+function stopPlayback() {
+  clearInterval(timer);
+  timer = null;
+  $("playSchedule").textContent = "Play";
+}
+
+function navigate(id) {
+  stopPlayback();
+
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.toggle("active", page.id === id);
+  });
+
+  document.querySelectorAll("nav button").forEach(button => {
+    button.classList.toggle("active", button.dataset.page === id);
+  });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+modules.forEach(([id, name, description]) => {
+  const button = document.createElement("button");
+  button.textContent = name;
+  button.dataset.page = id;
+  button.classList.toggle("active", id === "home");
+  button.onclick = () => navigate(id);
+  $("navigation").appendChild(button);
+
+  if (id !== "home") {
+    const card = document.createElement("button");
+    card.className = "card";
+    const title = document.createElement("strong");
+    title.textContent = name;
+    const text = document.createElement("span");
+    text.textContent = description;
+    card.append(title, text);
+    card.onclick = () => navigate(id);
+    $("moduleCards").appendChild(card);
+  }
+});
+
+/* PROCESS SCHEDULING */
+
+let schedule = [];
+let cursor = 0;
+let processes = [];
+let completion = [];
+let firstRun = [];
+let loadedAlgorithm = "fcfs";
+let loadedQuantum = 4;
+
+const taskNames = ["Video export", "Notification", "Search", "File scan"];
+
+function readInteger(id, min, max) {
+  const value = Math.round(Number($(id).value));
+  const safe = Number.isFinite(value)
+    ? Math.max(min, Math.min(max, value))
+    : min;
+
+  $(id).value = safe;
+  return safe;
+}
+
+function loadSchedule() {
+  stopPlayback();
+
+  loadedAlgorithm = $("algorithm").value;
+  loadedQuantum = readInteger("quantum", 1, 20);
+
+  processes = taskNames.map((name, i) => ({
+    id: i,
+    name,
+    burst: readInteger("burst" + i, 1, 40)
+  }));
+
+  schedule = [];
+
+  if (loadedAlgorithm === "rr") {
+    const remaining = processes.map(p => p.burst);
+    const queue = processes.map(p => p.id);
+
+    while (queue.length) {
+      const id = queue.shift();
+      const amount = Math.min(loadedQuantum, remaining[id]);
+
+      for (let i = 0; i < amount; i++) {
+        schedule.push(id);
+      }
+
+      remaining[id] -= amount;
+
+      if (remaining[id] > 0) {
+        queue.push(id);
+      }
+    }
+  } else {
+    const order = [...processes];
+
+    if (loadedAlgorithm === "sjf") {
+      order.sort((a, b) => a.burst - b.burst || a.id - b.id);
+    }
+
+    order.forEach(process => {
+      for (let i = 0; i < process.burst; i++) {
+        schedule.push(process.id);
+      }
+    });
+  }
+
+  completion = Array(4).fill(0);
+  firstRun = Array(4).fill(null);
+
+  schedule.forEach((id, time) => {
+    completion[id] = time + 1;
+
+    if (firstRun[id] === null) {
+      firstRun[id] = time;
+    }
+  });
+
+  resetSchedulePlayback();
+}
+
+function renderUnfinished() {
+  const used = Array(4).fill(0);
+
+  schedule.slice(0, cursor).forEach(id => used[id]++);
+
+  $("readyQueue").innerHTML = "";
+
+  processes.forEach(p => {
+    const remaining = p.burst - used[p.id];
+
+    if (remaining > 0) {
+      const chip = document.createElement("div");
+      chip.className = "process-chip p" + (p.id + 1);
+      chip.textContent = `P${p.id + 1}: ${remaining} left`;
+      $("readyQueue").appendChild(chip);
+    }
+  });
+
+  if (cursor === schedule.length) {
+    $("readyQueue").textContent = "All processes completed.";
+  }
+}
+
+function resetSchedulePlayback() {
+  stopPlayback();
+  cursor = 0;
+  $("timeline").innerHTML = "";
+  $("processResults").innerHTML = "";
+  $("cpuProcess").textContent = "Ready";
+  $("clock").textContent = "Time: 0";
+  $("processObservation").textContent =
+    "Scenario loaded. Press Step for one CPU time unit, or Play for automatic execution.";
+  renderUnfinished();
+}
+
+function showProcessResults() {
+  let waitingSum = 0;
+
+  const rows = processes.map(p => {
+    const waiting = completion[p.id] - p.burst;
+    waitingSum += waiting;
+
+    return `
+      <tr>
+        <td>P${p.id + 1}</td>
+        <td>${completion[p.id]}</td>
+        <td>${waiting}</td>
+        <td>${firstRun[p.id]}</td>
+      </tr>`;
+  }).join("");
+
+  const explanations = {
+    fcfs:
+      "FCFS ran processes in the displayed order without preemption. " +
+      "When the first burst is long, every later task waits behind it.",
+    sjf:
+      "SJF selected the shortest available burst first. " +
+      "With these simultaneous arrivals and known bursts, it minimizes average waiting time. " +
+      "Starvation requires an ongoing stream of new short jobs; that is not simulated here.",
+    rr:
+      "Round Robin rotated unfinished processes after each quantum. " +
+      "Short tasks got an earlier opportunity to run, but real context switches would add overhead."
+  };
+
+  $("processResults").innerHTML = `
+    <h4>Completed experiment</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Process</th>
+            <th>Completion</th>
+            <th>Waiting</th>
+            <th>First response</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <p>Average waiting time: ${(waitingSum / 4).toFixed(2)} units.</p>
+    <p class="muted">${explanations[loadedAlgorithm]}</p>
+    <p class="muted">
+      All arrivals are 0, so turnaround equals completion time.
+      Waiting = turnaround − CPU burst.
+    </p>`;
+}
+
+function stepSchedule() {
+  if (cursor >= schedule.length) {
+    stopPlayback();
+    return;
+  }
+
+  const id = schedule[cursor];
+  const tick = document.createElement("div");
+
+  tick.className = "tick p" + (id + 1);
+  tick.innerHTML = `P${id + 1}<small>${cursor}–${cursor + 1}</small>`;
+  tick.title = `${taskNames[id]} executes from ${cursor} to ${cursor + 1}`;
+
+  $("timeline").appendChild(tick);
+  cursor++;
+
+  $("cpuProcess").textContent = `P${id + 1}: ${taskNames[id]}`;
+  $("clock").textContent = `Time: ${cursor}`;
+
+  $("processObservation").textContent =
+    `During time ${cursor - 1}–${cursor}, P${id + 1} used the CPU. ` +
+    `Other unfinished processes received no CPU time during this unit.`;
+
+  renderUnfinished();
+  tick.scrollIntoView({ block: "nearest", inline: "nearest" });
+
+  if (cursor === schedule.length) {
+    stopPlayback();
+    $("cpuProcess").textContent = "Finished";
+    showProcessResults();
+  }
+}
+
+function startPlayback() {
+  if (cursor >= schedule.length) return;
+
+  $("playSchedule").textContent = "Pause";
+  timer = setInterval(stepSchedule, Number($("speed").value));
+}
+
+$("buildSchedule").onclick = loadSchedule;
+$("stepSchedule").onclick = () => {
+  stopPlayback();
+  stepSchedule();
+};
+$("resetSchedule").onclick = resetSchedulePlayback;
+
+$("playSchedule").onclick = () => {
+  if (timer !== null) stopPlayback();
+  else startPlayback();
+};
+
+$("speed").onchange = () => {
+  if (timer !== null) {
+    stopPlayback();
+    startPlayback();
+  }
+};
+
+/* MEMORY */
+
+const references = [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2];
+let memory = [];
+let recent = [];
+let memoryIndex = 0;
+let faults = 0;
+let hits = 0;
+let fifoPointer = 0;
+
+function paintFrames(selected = null, state = "") {
+  $("memoryFrames").innerHTML = "";
+
+  for (let i = 0; i < 3; i++) {
+    const frame = document.createElement("div");
+    frame.className = "frame";
+
+    if (memory[i] === selected && selected !== null) {
+      frame.classList.add(state);
+    }
+
+    frame.innerHTML =
+      `<span>Frame ${i + 1}</span><strong>${memory[i] ?? "—"}</strong>`;
+
+    $("memoryFrames").appendChild(frame);
+  }
+
+  $("memoryTags").textContent =
+    `References processed: ${memoryIndex}/${references.length} · ` +
+    `Hits: ${hits} · Faults: ${faults}`;
+}
+
+function resetMemory() {
+  memory = [];
+  recent = [];
+  memoryIndex = 0;
+  faults = 0;
+  hits = 0;
+  fifoPointer = 0;
+
+  $("nextPage").disabled = false;
+  $("memoryObservation").textContent =
+    "RAM starts empty. Press Next reference to request page 7.";
+
+  paintFrames();
+}
+
+$("nextPage").onclick = () => {
+  if (memoryIndex >= references.length) return;
+
+  const page = references[memoryIndex++];
+  const isHit = memory.includes(page);
+  let victim = null;
+
+  if (isHit) {
+    hits++;
+  } else {
+    faults++;
+
+    if (memory.length < 3) {
+      memory.push(page);
+    } else {
+      let index;
+
+      if ($("pagePolicy").value === "fifo") {
+        index = fifoPointer;
+        fifoPointer = (fifoPointer + 1) % 3;
+      } else {
+        index = memory.indexOf(recent[0]);
+      }
+
+      victim = memory[index];
+      memory[index] = page;
+    }
+  }
+
+  recent = recent.filter(value => value !== page && value !== victim);
+  recent.push(page);
+
+  paintFrames(page, isHit ? "hit" : "miss");
+
+  $("memoryObservation").textContent = isHit
+    ? `Page ${page}: HIT. It was already in RAM, so no replacement was needed.`
+    : `Page ${page}: FAULT. ` +
+      (victim === null
+        ? "A free frame was available."
+        : `Page ${victim} was evicted using ${$("pagePolicy").value.toUpperCase()}.`);
+
+  if (memoryIndex === references.length) {
+    $("nextPage").disabled = true;
+    $("memoryObservation").textContent +=
+      ` Finished: ${faults} faults and ${hits} hits. Reset and compare the other policy.`;
+  }
+};
+
+$("resetMemory").onclick = resetMemory;
+$("pagePolicy").onchange = resetMemory;
+
+/* DISK */
+
+let diskHead = 50;
+let pending = [];
+let movement = 0;
+
+function paintDisk() {
+  $("diskHead").textContent = diskHead;
+  $("diskHead").style.left = (5 + diskHead / 199 * 90) + "%";
+  $("diskPending").textContent =
+    `Pending: ${pending.join(", ") || "none"} · Total movement: ${movement}`;
+}
+
+function resetDisk() {
+  diskHead = 50;
+  pending = [82, 170, 43, 140, 24, 16, 190];
+  movement = 0;
+
+  $("nextDisk").disabled = false;
+  $("diskObservation").textContent =
+    "Which pending request is closest to 50? Step to find out.";
+
+  paintDisk();
+}
+
+$("nextDisk").onclick = () => {
+  if (!pending.length) return;
+
+  pending.sort((a, b) =>
+    Math.abs(a - diskHead) - Math.abs(b - diskHead)
+  );
+
+  const next = pending.shift();
+  const distance = Math.abs(next - diskHead);
+  const previous = diskHead;
+
+  movement += distance;
+  diskHead = next;
+  paintDisk();
+
+  $("diskObservation").textContent =
+    `Moved from ${previous} to ${next}: ${distance} cylinders. ` +
+    "This was the nearest pending request.";
+
+  if (!pending.length) {
+    $("nextDisk").disabled = true;
+    $("diskObservation").textContent +=
+      ` Finished with ${movement} cylinders of total movement. ` +
+      "A distant request could starve if new nearby requests kept arriving.";
+  }
+};
+
+$("resetDisk").onclick = resetDisk;
+
+/* DEADLOCK */
+
+let deadlockState = "initial";
+
+function resetDeadlock() {
+  deadlockState = "initial";
+  $("node1").className = "node";
+  $("node2").className = "node";
+  $("node1").textContent = "P1 holds printer";
+  $("node2").textContent = "P2 holds scanner";
+  $("deadlockObservation").textContent =
+    "Both processes hold one exclusive resource. They have not yet requested the other.";
+}
+
+$("createDeadlock").onclick = () => {
+  if (deadlockState !== "initial") return;
+
+  deadlockState = "blocked";
+  $("node1").className = "node blocked";
+  $("node2").className = "node blocked";
+  $("node1").textContent = "P1 holds printer; waits for scanner";
+  $("node2").textContent = "P2 holds scanner; waits for printer";
+
+  $("deadlockObservation").textContent =
+    "Deadlock: P1 waits for P2, and P2 waits for P1. " +
+    "Neither can complete under these conditions.";
+};
+
+$("recoverDeadlock").onclick = () => {
+  if (deadlockState !== "blocked") {
+    $("deadlockObservation").textContent =
+      "Create the deadlock before attempting recovery.";
+    return;
+  }
+
+  deadlockState = "recovered";
+  $("node1").className = "node running";
+  $("node2").className = "node";
+  $("node1").textContent = "P1 acquires scanner and resumes";
+  $("node2").textContent = "P2 terminated; scanner released";
+
+  $("deadlockObservation").textContent =
+    "The OS terminated P2 and reclaimed its simulated resource. " +
+    "P1 can continue, but P2 loses its unfinished work. " +
+    "Real device cleanup and recovery can be more complicated.";
+};
+
+$("resetDeadlock").onclick = resetDeadlock;
+
+/* SECURITY */
+
+let securityStage = 0;
+let request = null;
+
+function resetSecurity() {
+  securityStage = 0;
+  request = null;
+
+  document.querySelectorAll(".stage").forEach(stage => {
+    stage.classList.remove("current");
+  });
+
+  $("securityStep").disabled = false;
+  $("securityObservation").textContent =
+    "Choose an identity and operation. The request is captured at the first stage.";
+}
+
+$("securityStep").onclick = () => {
+  if (securityStage === 0) {
+    request = {
+      user: $("identity").value,
+      operation: $("operation").value
+    };
+  }
+
+  const allowed = request.operation === "read" || request.user === "alice";
+
+  const messages = [
+    `${request.user} requests ${request.operation}() on Alice's file.`,
+    "The system-call entry transfers execution into kernel mode.",
+    `The kernel checks the captured identity and file permissions: ` +
+      `${request.user} may ${allowed ? "" : "not "}${request.operation} this file.`,
+    allowed
+      ? "ALLOWED: the simulated operation completes and a result returns to the application."
+      : "DENIED: the simulated write does not occur. An access error returns to the application."
+  ];
+
+  document.querySelectorAll(".stage").forEach((stage, i) => {
+    stage.classList.toggle("current", i === securityStage);
+  });
+
+  $("securityObservation").textContent = messages[securityStage];
+  securityStage++;
+
+  if (securityStage === 4) {
+    $("securityStep").disabled = true;
+  }
+};
+
+$("resetSecurity").onclick = resetSecurity;
+$("identity").onchange = resetSecurity;
+$("operation").onchange = resetSecurity;
+
+/* QUIZZES */
+
+const question = (difficulty, text, options, answer, explanation) => ({
+  difficulty, text, options, answer, explanation
+});
+
+const quizzes = {
+  process: [
+    question(
+      "easy",
+      "What does CPU burst time represent in this lab?",
+      [
+        "Time spent executing on the CPU",
+        "The size of a saved file",
+        "Network speed",
+        "Total RAM capacity"
+      ],
+      0,
+      "Burst time is CPU execution time. It does not mean file size or memory usage."
+    ),
+    question(
+      "medium",
+      "Under FCFS, all processes arrive at 0 in order P1, P2, P3, P4. P1's burst is 20. When does P2 first run?",
+      ["At 0", "At 2", "At 20", "At 29"],
+      2,
+      "FCFS does not preempt P1, so P2 starts after P1 completes its 20-unit burst."
+    ),
+    question(
+      "medium",
+      "Which change most directly lets a short task run before a long task finishes?",
+      [
+        "Use Round Robin with a finite quantum",
+        "Increase the long task's burst",
+        "Remove all interrupts",
+        "Keep non-preemptive FCFS unchanged"
+      ],
+      0,
+      "Round Robin limits each turn, allowing another ready process to run."
+    ),
+    question(
+      "hard",
+      "For bursts 20, 2, 3, 4 and simultaneous arrivals, what is average waiting time under non-preemptive SJF?",
+      ["4.00", "4.50", "5.50", "16.75"],
+      1,
+      "The order is P2, P3, P4, P1. Waits are 0, 2, 5, 9. Their average is 4.5."
+    ),
+    question(
+      "hard",
+      "With bursts 20, 2, 3, 4, all arrivals 0, and Round Robin quantum 4, when does P2 first run?",
+      ["At 2", "At 4", "At 20", "At 24"],
+      1,
+      "P1 receives the first four units. P2 then receives CPU time, so its response time is 4."
+    )
+  ],
+
+  memory: [
+    question(
+      "easy",
+      "A referenced page is absent from RAM. What occurs?",
+      ["A page fault", "A guaranteed deadlock", "A file rename", "A CPU shutdown"],
+      0,
+      "The OS handles the missing page. Replacement is needed only if no suitable free frame is available."
+    ),
+    question(
+      "medium",
+      "Three frames contain pages loaded in order 7, 0, 1. No hits occurred. Which page does FIFO evict next?",
+      ["7", "0", "1", "All three"],
+      0,
+      "FIFO evicts the oldest loaded page: 7."
+    ),
+    question(
+      "medium",
+      "Why does LRU update recency information after a page hit?",
+      [
+        "The hit proves the page was just used",
+        "Every hit must load a page from disk",
+        "Hits remove all frames",
+        "Page numbers must increase"
+      ],
+      0,
+      "A hit changes which resident page was used least recently."
+    ),
+    question(
+      "hard",
+      "What is Belady's anomaly?",
+      [
+        "More frames can cause more faults under FIFO",
+        "LRU always causes more faults than FIFO",
+        "Every fault is a software bug",
+        "RAM never fills"
+      ],
+      0,
+      "Some FIFO reference strings produce more faults after the frame count increases."
+    ),
+    question(
+      "hard",
+      "Why can excessive page faults cause thrashing?",
+      [
+        "The machine spends excessive time paging rather than doing useful execution",
+        "They make disks infinite",
+        "They eliminate scheduling",
+        "They always delete processes"
+      ],
+      0,
+      "Paging pressure can dominate useful execution, especially when active working sets exceed available memory."
+    )
+  ],
+
+  files: [
+    question(
+      "easy",
+      "Which device has the mechanical seek head modeled in this lab?",
+      ["An HDD", "An SSD", "RAM", "A CPU register"],
+      0,
+      "Traditional HDDs have moving heads; SSDs do not."
+    ),
+    question(
+      "medium",
+      "From cylinder 50, which request is nearest: 82, 43, or 24?",
+      ["82", "43", "24", "All are equally distant"],
+      1,
+      "The distances are 32, 7, and 26. Cylinder 43 is nearest."
+    ),
+    question(
+      "medium",
+      "Why can SSTF delay distant requests?",
+      [
+        "New nearby requests may repeatedly be selected first",
+        "It always chooses the farthest request",
+        "It deletes metadata",
+        "It cannot move the head"
+      ],
+      0,
+      "An ongoing stream of closer requests can starve a distant request."
+    ),
+    question(
+      "hard",
+      "Starting at 50, SSTF services 43, 24, then 16. How far has the head moved?",
+      ["24", "34", "50", "66"],
+      1,
+      "Movement is |50−43| + |43−24| + |24−16| = 7 + 19 + 8 = 34."
+    ),
+    question(
+      "hard",
+      "What does filesystem journaling primarily help with?",
+      [
+        "Recovering consistency after interrupted updates",
+        "Eliminating all need for backups",
+        "Making RAM permanent",
+        "Preventing every storage failure"
+      ],
+      0,
+      "A journal helps recover interrupted operations. It is not a replacement for backups."
+    )
+  ],
+
+  deadlock: [
+    question(
+      "easy",
+      "P1 waits for a resource held by P2, while P2 waits for one held by P1. In this single-instance lab, this is:",
+      ["Deadlock", "A page hit", "A completed task", "Authentication"],
+      0,
+      "The circular dependency prevents both processes from progressing."
+    ),
+    question(
+      "medium",
+      "What does hold and wait mean?",
+      [
+        "Holding a resource while requesting another",
+        "Owning no resources",
+        "Finishing every task",
+        "Running without a scheduler"
+      ],
+      0,
+      "A process retains at least one resource while waiting for an additional one."
+    ),
+    question(
+      "medium",
+      "What cost does this lab's termination-based recovery impose?",
+      [
+        "P2 loses unfinished work",
+        "The scanner becomes infinite",
+        "No process can resume",
+        "The CPU disappears"
+      ],
+      0,
+      "Terminating a process can release resources but sacrifices its unfinished work."
+    ),
+    question(
+      "hard",
+      "Is a cycle sufficient to prove deadlock when resource types may have multiple instances?",
+      ["Always", "Not necessarily", "Only on SSDs", "Cycles never matter"],
+      1,
+      "With multiple instances, a cycle alone is not sufficient. Additional available instances may allow progress."
+    ),
+    question(
+      "hard",
+      "What does a safe state mean in deadlock avoidance?",
+      [
+        "There exists an order in which all processes can finish",
+        "No process uses memory",
+        "All resources are permanently locked",
+        "All users are administrators"
+      ],
+      0,
+      "A safe sequence can satisfy all processes' remaining needs in some order."
+    )
+  ],
+
+  security: [
+    question(
+      "easy",
+      "A user program requests a kernel service using:",
+      ["A system call", "A folder name", "A monitor cable", "A color theme"],
+      0,
+      "System calls provide controlled access to kernel services."
+    ),
+    question(
+      "medium",
+      "In this lab, a guest attempts write(). What happens?",
+      [
+        "Access is denied",
+        "The guest becomes Alice",
+        "The permissions are ignored",
+        "The computer must reboot"
+      ],
+      0,
+      "The modeled guest permissions permit reading but not writing."
+    ),
+    question(
+      "medium",
+      "Which statement distinguishes authentication from authorization?",
+      [
+        "Authentication verifies identity; authorization checks permitted actions",
+        "They are always identical",
+        "Authorization measures CPU time",
+        "Authentication replaces the kernel"
+      ],
+      0,
+      "Identity verification and permission decisions are related but distinct."
+    ),
+    question(
+      "hard",
+      "Why should a process receive only the permissions it needs?",
+      [
+        "To limit damage if compromised",
+        "To guarantee it never has bugs",
+        "To disable system calls",
+        "To remove memory protection"
+      ],
+      0,
+      "Least privilege reduces the impact of compromise; it does not eliminate software bugs."
+    ),
+    question(
+      "hard",
+      "Why capture the request identity before checking access?",
+      [
+        "So validation and the simulated action use the same request",
+        "So permissions never matter",
+        "So every request is allowed",
+        "So the file becomes executable"
+      ],
+      0,
+      "Checks must apply to the actual operation and credentials used. Inconsistent checks and use can create security flaws."
+    )
+  ]
+};
+
+const points = { easy: 1, medium: 2, hard: 3 };
+const outcomes = {};
+const maximum = Object.values(quizzes).flat()
+  .reduce((sum, q) => sum + points[q.difficulty], 0);
+
+function updateScores() {
+  let earned = 0;
+  let answered = 0;
+  let correct = 0;
+
+  const lines = Object.entries(quizzes).map(([topic, questions]) => {
+    let topicEarned = 0;
+    let topicMax = 0;
+    let topicAnswered = 0;
+
+    questions.forEach((q, i) => {
+      const value = points[q.difficulty];
+      const result = outcomes[topic + "-" + i];
+      topicMax += value;
+
+      if (result !== undefined) {
+        answered++;
+        topicAnswered++;
+
+        if (result) {
+          earned += value;
+          topicEarned += value;
+          correct++;
+        }
+      }
+    });
+
+    return `${topic}: ${topicEarned}/${topicMax} points · ` +
+      `${topicAnswered}/${questions.length} answered`;
+  });
+
+  $("totalScore").textContent = `${earned} / ${maximum}`;
+  $("scoreProgress").style.width = (earned / maximum * 100) + "%";
+
+  const accuracy = answered ? Math.round(correct / answered * 100) : 0;
+
+  $("scoreDetails").innerHTML =
+    lines.join("<br>") +
+    `<br>Answered: ${answered}/25 · Accuracy: ${accuracy}%`;
+}
+
+Object.entries(quizzes).forEach(([topic, questions]) => {
+  const container = document.createElement("div");
+  container.className = "panel";
+
+  const title = document.createElement("h3");
+  title.textContent = "Test your understanding";
+  container.appendChild(title);
+
+  questions.forEach((q, index) => {
+    const key = topic + "-" + index;
+    const card = document.createElement("div");
+    card.className = "question";
+
+    const difficulty = document.createElement("div");
+    difficulty.className = "difficulty";
+    difficulty.textContent =
+      `${q.difficulty} · ${points[q.difficulty]} point(s)`;
+
+    const heading = document.createElement("h4");
+    heading.textContent = `${index + 1}. ${q.text}`;
+
+    const feedback = document.createElement("div");
+    feedback.className = "feedback";
+    feedback.setAttribute("aria-live", "polite");
+
+    card.append(difficulty, heading);
+
+    q.options.forEach((option, optionIndex) => {
+      const button = document.createElement("button");
+      button.className = "option";
+      button.textContent = option;
+
+      button.onclick = () => {
+        if (outcomes[key] !== undefined) return;
+
+        const correct = optionIndex === q.answer;
+        outcomes[key] = correct;
+
+        const buttons = card.querySelectorAll(".option");
+
+        buttons.forEach((item, i) => {
+          item.disabled = true;
+
+          if (i === q.answer) {
+            item.classList.add("correct");
+          }
+        });
+
+        if (!correct) {
+          button.classList.add("wrong");
+        }
+
+        feedback.textContent =
+          (correct ? "Correct. " : "Not quite. ") + q.explanation;
+
+        updateScores();
+      };
+
+      card.appendChild(button);
+    });
+
+    card.appendChild(feedback);
+    container.appendChild(card);
+  });
+
+  $(topic + "Quiz").appendChild(container);
+});
+
+/* INITIALIZE */
+
+loadSchedule();
+resetMemory();
+resetDisk();
+resetDeadlock();
+resetSecurity();
+updateScores();
+</script>
+</body>
+</html>
